@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'auth_app',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -48,7 +49,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+# If you want to allow all origins (not recommended for production)
+# CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'auth_project.urls'
 

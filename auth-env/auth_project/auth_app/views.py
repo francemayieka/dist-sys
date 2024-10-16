@@ -35,7 +35,12 @@ def login(request):
     user = authenticate(request, username=username, password=password)
 
     if user:
-        return Response({'message': f'Welcome, {user.username}!'}, status=200)
+        # Return the username along with a welcome message
+        return Response({
+            'message': f'Welcome, {user.username}!',
+            'username': user.username
+        }, status=200)
+    
     return Response({'error': 'Invalid credentials'}, status=401)
 
 @api_view(['PATCH'])
