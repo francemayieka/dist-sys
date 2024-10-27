@@ -12,12 +12,11 @@ const Contacts = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [name, setName] = useState(""); // New state for name
-  const [isUpdating, setIsUpdating] = useState(false); // New state to handle update form visibility
+  const [name, setName] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const toggleForm = () => setFormVisible(!formVisible);
 
-  // Add a new contact
   const handleAddContact = async (e) => {
     e.preventDefault();
     try {
@@ -35,7 +34,6 @@ const Contacts = () => {
     }
   };
 
-  // Reset the form fields
   const resetForm = () => {
     setFormVisible(false);
     setRegistrationNumber("");
@@ -43,15 +41,14 @@ const Contacts = () => {
     setEmail("");
     setAddress("");
     setName("");
-    setIsUpdating(false); // Reset update state
+    setIsUpdating(false);
   };
 
-  // Search for a contact by registration number
   const handleSearch = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/contacts/search/${searchTerm}/`);
-      setContact(response.data); // Store the found contact details
-      setName(response.data.name); // Populate name for updating
+      setContact(response.data);
+      setName(response.data.name);
       setRegistrationNumber(response.data.registration_number);
       setPhoneNumber(response.data.phone_number);
       setEmail(response.data.email);
@@ -62,19 +59,17 @@ const Contacts = () => {
     }
   };
 
-  // Delete a contact by registration number
   const handleDelete = async (registrationNumber) => {
     try {
       await axios.delete(`${API_BASE_URL}/contacts/delete/${encodeURIComponent(registrationNumber)}/`);
       toast.success("Contact deleted successfully!");
-      setContact(null); // Clear the contact view
-      resetForm(); // Reset the form after deletion
+      setContact(null);
+      resetForm();
     } catch (error) {
       toast.error("Failed to delete contact.");
     }
   };
 
-  // Update a contact
   const handleUpdateContact = async (e) => {
     e.preventDefault();
     try {
@@ -86,7 +81,6 @@ const Contacts = () => {
       });
       toast.success("Contact updated successfully!");
 
-      // Update the contact state with the new details
       setContact({
         name,
         registration_number: registrationNumber,
@@ -95,7 +89,7 @@ const Contacts = () => {
         address,
       });
 
-      resetForm(); // Reset the form after update
+      resetForm();
     } catch (error) {
       toast.error("Failed to update contact.");
     }
@@ -122,7 +116,6 @@ const Contacts = () => {
         </button>
       </div>
 
-      {/* Render searched contact details if found */}
       {contact && (
         <div className="bg-white shadow-md p-4 rounded mb-4">
           <h2 className="text-xl font-bold mb-2">Contact Details</h2>
@@ -146,7 +139,6 @@ const Contacts = () => {
         </div>
       )}
 
-      {/* Add Contact Button */}
       <button
         onClick={toggleForm}
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-4"
@@ -154,7 +146,6 @@ const Contacts = () => {
         + Add Contact
       </button>
 
-      {/* Add Contact Form */}
       {(formVisible || isUpdating) && (
         <form onSubmit={isUpdating ? handleUpdateContact : handleAddContact} className="bg-white shadow-md p-4 rounded max-w-md mx-auto">
           <div className="mb-4">

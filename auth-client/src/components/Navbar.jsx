@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = ({ isLoggedIn, username, handleLogout }) => {

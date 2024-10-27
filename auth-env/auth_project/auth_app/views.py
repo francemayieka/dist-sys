@@ -19,7 +19,6 @@ def home(request):
 
 
 def generate_otp():
-    """Generate an 8-character alphanumeric OTP."""
     return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
 
 @api_view(['POST'])
@@ -37,7 +36,6 @@ def login(request):
     user = authenticate(request, username=username, password=password)
 
     if user:
-        # Return the username along with a welcome message
         return Response({
             'message': f'Welcome, {user.username}!',
             'username': user.username
@@ -52,18 +50,16 @@ def forgot_password(request):
     try:
         user = User.objects.get(email=email)
         otp = generate_otp()
-        expiry_time = now() + timedelta(minutes=15)  # OTP valid for 15 minutes
+        expiry_time = now() + timedelta(minutes=15)
 
-        # Update user with OTP and expiry time
         user.otp = otp
         user.otp_expiry = expiry_time
         user.save()
 
-        # Send OTP via email
         send_mail(
             'Password Reset OTP',
             f'Your OTP is: {otp}. It will expire in 15 minutes.',
-            os.getenv('EMAIL_HOST_USER'),  # Sender email from .env
+            os.getenv('EMAIL_HOST_USER'),
             [user.email],
             fail_silently=False,
         )
@@ -87,9 +83,8 @@ def reset_password(request):
         if now() > user.otp_expiry:
             return Response({'error': 'OTP has expired.'}, status=400)
 
-        # Update password
         user.set_password(new_password)
-        user.otp = None  # Clear OTP
+        user.otp = None
         user.otp_expiry = None
         user.save()
 
@@ -149,7 +144,7 @@ def update_contact(request, registration_number):
     except Contact.DoesNotExist:
         return Response({"error": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = ContactSerializer(contact, data=request.data, partial=True)  # Use partial=True to allow partial updates
+    serializer = ContactSerializer(contact, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
