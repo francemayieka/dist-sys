@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Contacts from "./pages/Contacts"; // Import the Contacts page
 import { useState } from "react";
 
 function App() {
@@ -26,13 +27,18 @@ function App() {
   return (
     <Router>
       <Toaster position="top-center" />
-      <Navbar isLoggedIn={isLoggedIn} username={username} handleLogout={handleLogout} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        username={username}
+        handleLogout={handleLogout}
+      />
       <Routes>
         <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login setLoggedIn={handleLogin} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/contacts" element={<Contacts />} /> {/* New Contacts Route */}
       </Routes>
     </Router>
   );

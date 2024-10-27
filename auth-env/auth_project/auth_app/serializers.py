@@ -1,6 +1,6 @@
-# auth_app/serializers.py
 from rest_framework import serializers
 from .models import User
+from .models import Contact
 
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -17,3 +17,9 @@ class SignupSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ['name', 'phone_number', 'email', 'address', 'registration_number']

@@ -14,6 +14,12 @@ const Navbar = ({ isLoggedIn, username, handleLogout }) => {
           {isLoggedIn ? (
             <>
               <span className="text-white">Hi, {username}!</span>
+              <Link
+                to="/contacts"
+                className="bg-white text-blue-600 px-4 py-2 rounded shadow-md hover:bg-gray-100"
+              >
+                Contacts
+              </Link>
               <button
                 onClick={() => {
                   handleLogout();

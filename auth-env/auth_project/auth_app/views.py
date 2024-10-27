@@ -1,4 +1,3 @@
-# auth_app/views.py
 import random
 import string
 from django.utils.timezone import now, timedelta
@@ -9,6 +8,9 @@ from django.contrib.auth import authenticate
 from .models import User
 from .serializers import SignupSerializer
 from django.http import JsonResponse
+from .serializers import ContactSerializer
+from .models import Contact
+from rest_framework import status
 import os
 
 
@@ -95,3 +97,61 @@ def reset_password(request):
 
     except User.DoesNotExist:
         return Response({'error': 'User not found.'}, status=404)
+
+
+
+@api_view(['POST'])
+def add_contact(request):
+    data = request.data
+    try:
+        contact = Contact.objects.create(
+            name=data.get('name'),
+            phone_number=data.get('phone_number'),
+            email=data.get('email'),
+            address=data.get('address'),
+            registration_number=data.get('registration_number'),
+        )
+        return Response({"message": "Contact added successfully"}, status=201)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+
+@api_view(['GET'])
+def search_contact(request, registration_number):
+    try:
+        contact = Contact.objects.get(registration_number=registration_number)
+        contact_data = {
+            "name": contact.name,
+            "phone_number": contact.phone_number,
+            "email": contact.email,
+            "address": contact.address,
+            "registration_number": contact.registration_number,
+        }
+        return Response(contact_data, status=200)
+    except Contact.DoesNotExist:
+        return Response({"error": "Contact not found"}, status=404)
+
+
+@api_view(['DELETE'])
+def delete_contact(request, registration_number):
+    try:
+        contact = Contact.objects.get(registration_number=registration_number)
+        contact.delete()
+        return Response({"message": "Contact deleted successfully"}, status=200)
+    except Contact.DoesNotExist:
+        return Response({"error": "Contact not found"}, status=404)
+
+
+@api_view(['PATCH'])
+def update_contact(request, registration_number):
+    try:
+        contact = Contact.objects.get(registration_number=registration_number)
+    except Contact.DoesNotExist:
+        return Response({"error": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ContactSerializer(contact, data=request.data, partial=True)  # Use partial=True to allow partial updates
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
